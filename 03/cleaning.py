@@ -62,20 +62,30 @@ def check_missing_values(df):
     print(missing[missing > 0] if missing.sum() > 0 else "No missing values found")
 
 
-print("Loading Titanic dataset and saving to CSV file...")
-if not os.path.exists("data"):
-    os.makedirs("data")
-    print("Created 'data' directory.")
+data_dir = "data"
+csv_path = os.path.join(data_dir, "titanic.csv")
+cleaned_csv_path = os.path.join(data_dir, "titanic_cleaned.csv")
+
+os.makedirs("data", exist_ok=True)
+
+if os.path.exists(csv_path):
+    df = pd.read_csv(csv_path)
+    print("Loaded Titanic dataset from local file.")
+
 else:
-    print("'data' directory already exists.")
     df = sns.load_dataset("titanic")
     df.to_csv("data/titanic.csv", index=False)
-    print("Titanic dataset loaded and saved to 'data/titanic.csv'.")
-    preview_data(df, name="Original Titanic Dataset")
-    check_missing_values(df)
-    df = handle_missing_values(df)
-    df = remove_duplicates(df)
-    check_missing_values(df)
-    df = normalize_data(df)
-    df = standardize_data(df)
-    preview_data(df, name="Cleaned Titanic Dataset")
+    print("Downloaded and saved Titanic dataset.")
+
+preview_data(df, name="Original Titanic Dataset")
+check_missing_values(df)
+
+df = handle_missing_values(df)
+df = remove_duplicates(df)
+check_missing_values(df)
+
+df = normalize_data(df)
+df = standardize_data(df)
+
+df.to_csv(cleaned_csv_path, index=False)
+preview_data(df, name="Cleaned Titanic Dataset")
